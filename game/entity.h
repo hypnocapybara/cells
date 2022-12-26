@@ -2,9 +2,9 @@
 #define __ENTITY_H_CLASS__
 
 class Point2;
-class Vector2;
 
-#include "utils/geometry.h";
+#include "utils/geometry.h"
+#include "objects/world.h"
 
 enum EntityType {
     unknown,
@@ -14,7 +14,10 @@ enum EntityType {
 
 class Entity {
     public:
-    Entity(Point2 pos) {this->position = pos;};
+    Entity(World* world, Point2 pos) {
+        this->position = pos;
+        this->world = world;
+    };
     virtual void Process() = 0;
     virtual EntityType GetType() {
         return EntityType::unknown;
@@ -24,6 +27,9 @@ class Entity {
 
     protected:
     Point2 position;
+    World* world;
+
+    friend class World;
 };
 
 #endif

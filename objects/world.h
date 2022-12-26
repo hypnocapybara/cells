@@ -4,10 +4,12 @@
 
 class Cell;
 class Food;
+class Point2;
 
-#include <vector>;
-#include "game/cell.h";
-#include "game/food.h";
+#include <vector>
+#include "game/cell.h"
+#include "game/food.h"
+#include "utils/geometry.h"
 
 
 class World {
@@ -15,7 +17,10 @@ class World {
     inline float GetCurrentTime() {return this->currentTime;};
     void Step(float delta);
 
+    Cell* CreateBacteria(Point2 position, int ownerId);
+    Food* CreateFood(Point2 position, int maxAmount, float radius, int maxCellsCount);
     void DestroyCell(Cell* cell);
+    void DestroyFood(Food* food);
 
     protected:
     float width, height;
@@ -24,8 +29,6 @@ class World {
 
     float currentTime = 0;
 };
-
-World* g_World;
 
 
 #endif

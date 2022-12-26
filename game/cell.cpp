@@ -4,7 +4,7 @@
 #include "utils/geometry.h"
 
 
-Cell::Cell(Point2 pos, int ownerId, std::map<std::string, std::string> params) : Entity(pos) {
+Cell::Cell(World* world, Point2 pos, int ownerId, std::map<std::string, std::string> params) : Entity(world, pos) {
     this->userId = ownerId;
 
     this->healthCurrent = this->healthMax = std::stof(params["healthMax"]);
@@ -22,7 +22,7 @@ Cell::Cell(Point2 pos, int ownerId, std::map<std::string, std::string> params) :
     this->attackCooldown = std::stof(params["attackCooldown"]);
     this->enemiesDetectRadius = std::stof(params["enemiesDetectRadius"]);
 
-    this->lastFeedTime = this->lastAttackTime = this->birthTime = g_World->GetCurrentTime();
+    this->lastFeedTime = this->lastAttackTime = this->birthTime = this->world->GetCurrentTime();
 }
 
 void Cell::Process() {
@@ -54,15 +54,15 @@ bool Cell::CanSplit() {
 }
 
 bool Cell::IsTooOld() {
-    return this->birthTime + this->lifetime < g_World->GetCurrentTime();
+    return this->birthTime + this->lifetime < this->world->GetCurrentTime();
 }
 
 bool Cell::IsTooHungry() {
-    return this->lastFeedTime + this->maxTimeWithoutFood < g_World->GetCurrentTime();
+    return this->lastFeedTime + this->maxTimeWithoutFood < this->world->GetCurrentTime();
 }
 
 bool Cell::IsInCooldownFromAttack() {
-    return this->lastAttackTime + this->attackCooldown < g_World->GetCurrentTime();
+    return this->lastAttackTime + this->attackCooldown < this->world->GetCurrentTime();
 }
 
 bool Cell::CanAttack(Cell* otherCell) {
@@ -81,12 +81,12 @@ bool Cell::CanEat(Food* food) {
 void Cell::Eat(Food* food) {
     food->HandleEaten();
 
-    this->lastFeedTime = g_World->GetCurrentTime();
+    this->lastFeedTime = this->world->GetCurrentTime();
     this->feedCurrent++;
 }
 
 void Cell::Attack(Cell* otherCell) {
-    this->lastAttackTime = g_World->GetCurrentTime();
+    this->lastAttackTime = this->world->GetCurrentTime();
     otherCell->TakeDamage(this->attackPower);
 }
 
@@ -114,7 +114,7 @@ void Cell::LeaveFoodBase() {
 
 void Cell::Die() {
     this->LeaveFoodBase();
-    g_World->DestroyCell(this);
+    this->world->DestroyCell(this);
 }
 
 void Cell::Split() {

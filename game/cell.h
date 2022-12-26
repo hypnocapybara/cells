@@ -4,17 +4,19 @@
 class Entity;
 class Food;
 class Point2;
+class World;
 
 #include <map>
 #include <string>
 
-#include "entity.h";
-#include "food.h";
-#include "utils/geometry.h";
+#include "entity.h"
+#include "food.h"
+#include "utils/geometry.h"
+#include "objects/world.h"
 
 class Cell : public Entity {
     public:
-    Cell(Point2 pos, int ownerId, std::map<std::string, std::string> params);
+    Cell(World* world, Point2 pos, int ownerId, std::map<std::string, std::string> params);
 
     EntityType GetType() {
         return EntityType::cell;

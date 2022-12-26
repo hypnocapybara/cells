@@ -5,16 +5,18 @@
 class Point2;
 class Entity;
 class Cell;
+class World;
 
 
 #include <vector>
 #include "utils/geometry.h"
 #include "entity.h"
 #include "cell.h"
+#include "objects/world.h"
 
 class Food : public Entity {
     public:
-    Food(Point2 pos, int maxAmount, float radius, int maxCellsCount) : Entity(pos) {
+    Food(World* world, Point2 pos, int maxAmount, float radius, int maxCellsCount) : Entity(world, pos) {
         this->currentAmount = this->maxAmount = maxAmount;
         this->radius = radius;
         this->maxCellsCount = maxCellsCount;
@@ -43,6 +45,8 @@ class Food : public Entity {
     std::vector<Cell*> cells;
     int maxCellsCount = 0;
     float radius = 0;
+
+    friend class World;
 };
 
 #endif
