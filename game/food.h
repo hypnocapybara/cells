@@ -35,6 +35,7 @@ class Food : public Entity {
     inline bool HasAmountAvailable() {return this->currentAmount > 0;}
 
     bool IsCellInActiveZone(Cell* cell);
+    bool HasAvailableAmount();
     void HandleEaten();
     void CellLeave(Cell* cell);
     void CellOccupy(Cell* cell);

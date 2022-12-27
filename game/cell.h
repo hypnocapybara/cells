@@ -59,7 +59,9 @@ class Cell : public Entity {
     float lifetime = 0;
 
     // move
-    Vector2 direction;
+    // Vector2 direction;
+    bool wannaMove = false;
+    Point2 poi;
     float speed = 0;
 
     // feed & fission variables
@@ -80,6 +82,7 @@ class Cell : public Entity {
     // belonging
     int userId = 0;
 
+    friend class World;
 };
 
  

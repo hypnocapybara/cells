@@ -1,11 +1,66 @@
 #include <map>
 #include <string>
 #include <algorithm>
+#include <cassert>
 #include "objects/world.h"
 
 
 void World::Step(float delta) {
+    // occupy the base for free cells
+    // process all entities
+    // move entities
+    this->currentTime += delta;
 
+    for (auto it = this->food.begin(); it != this->food.end(); it++) {
+        Food* food = *it;
+        int freeSpots = food->GetMaxCellsCount() - food->GetCurrentCellsCount();
+        if (freeSpots <= 0) {
+            continue;
+        }
+
+        for (auto gt = this->cells.begin(); gt != this->cells.end(); gt++) {
+            if (freeSpots <= 0) {
+                break;
+            }
+
+            Cell* cell = *gt;
+            if (cell->feedBase) {
+                continue;
+            }
+
+            if (food->IsCellInActiveZone(cell)) {
+                cell->OccupyFoodBase(food);
+                freeSpots--;
+            }
+        }
+    }
+
+    for (auto it = this->food.begin(); it != this->food.end(); it++) {
+        Food* food = *it;
+        food->Process();
+    }
+
+    for (auto it = this->cells.begin(); it != this->cells.end(); it++) {
+        Cell* cell = *it;
+        cell->Process();
+    }
+
+    for (auto it = this->cells.begin(); it != this->cells.end(); it++) {
+        Cell* cell = *it;
+        if (cell->wannaMove) {
+            float distanceToPOI = Point2::DistanceBetween(cell->position, cell->poi);
+            float distanceInStep = delta * cell->speed;
+            if (distanceInStep >= distanceToPOI) {
+                cell->position = cell->poi;
+            } else {
+                Vector2 direction = Vector2::FromPoints(cell->position, cell->poi);
+                direction.Normalize();
+                direction.MultiplyLength(distanceInStep);
+
+                cell->position.AddVector(direction);
+            }
+        }
+    }
 }
 
 Cell* World::CreateBacteria(Point2 position, int ownerId) {

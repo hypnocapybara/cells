@@ -4,6 +4,13 @@
 
 void Food::Process() {
     // destroy if fully eaten
+    if (this->currentAmount <= 0) {
+        return this->Die();
+    }
+}
+
+void Food::Die() {
+    this->world->DestroyFood(this);
 }
 
 bool Food::IsCellInActiveZone(Cell* cell) {

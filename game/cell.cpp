@@ -32,6 +32,8 @@ void Cell::Process() {
     // if not enough food - die
     // if too old - die
     // if left the cell area - free the space
+    this->wannaMove = false;
+
     if (this->IsOutOfHealth() || this->IsTooHungry() || this->IsTooOld()) {
         return this->Die();
     }
@@ -47,6 +49,10 @@ void Cell::Process() {
     if (this->feedBase && !this->IsWithinFoodBase()) {
         this->LeaveFoodBase();
     }
+
+    this->wannaMove = true;
+    this->poi = this->position;
+    // TODO: form decission and POI
 }
 
 bool Cell::CanSplit() {
@@ -79,8 +85,11 @@ bool Cell::CanEat(Food* food) {
 }
 
 void Cell::Eat(Food* food) {
-    food->HandleEaten();
+    if (!food->HasAmountAvailable()) {
+        return;
+    }
 
+    food->HandleEaten();
     this->lastFeedTime = this->world->GetCurrentTime();
     this->feedCurrent++;
 }
