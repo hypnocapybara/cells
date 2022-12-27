@@ -5,12 +5,13 @@ class Entity;
 class Food;
 class Point2;
 class World;
+// enum EntityType;
 
 #include <map>
 #include <string>
 
-#include "entity.h"
-#include "food.h"
+#include "game/entity.h"
+#include "game/food.h"
 #include "utils/geometry.h"
 #include "objects/world.h"
 
@@ -18,9 +19,9 @@ class Cell : public Entity {
     public:
     Cell(World* world, Point2 pos, int ownerId, std::map<std::string, std::string> params);
 
-    EntityType GetType() {
-        return EntityType::cell;
-    };
+    // EntityType GetType() {
+    //     return EntityType::cell;
+    // };
 
     void Process();
 

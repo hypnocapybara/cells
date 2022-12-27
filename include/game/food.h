@@ -6,25 +6,23 @@ class Point2;
 class Entity;
 class Cell;
 class World;
+// enum EntityType;
 
 
 #include <vector>
+
 #include "utils/geometry.h"
-#include "entity.h"
-#include "cell.h"
+#include "game/entity.h"
+#include "game/cell.h"
 #include "objects/world.h"
 
 class Food : public Entity {
     public:
-    Food(World* world, Point2 pos, int maxAmount, float radius, int maxCellsCount) : Entity(world, pos) {
-        this->currentAmount = this->maxAmount = maxAmount;
-        this->radius = radius;
-        this->maxCellsCount = maxCellsCount;
-    }
+    Food(World* world, Point2 pos, int maxAmount, float radius, int maxCellsCount);
 
-    EntityType GetType() {
-        return EntityType::food;
-    }
+    // EntityType GetType() {
+    //     return EntityType::food;
+    // }
 
     void Process();
     void Die();
