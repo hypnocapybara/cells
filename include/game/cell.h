@@ -38,11 +38,12 @@ class Cell : public Entity {
     void Attack(Cell* otherCell);
     void TakeDamage(float amount);
 
-    bool CanEat(Food* food);
-    void Eat(Food* food);
+    bool CanEat();
+    void Eat();
     void OccupyFoodBase(Food* food);
     void LeaveFoodBase();
     bool IsWithinFoodBase();
+    bool IsInCooldownFromFeed();
 
     protected:
     // Variables for actions:
@@ -69,7 +70,8 @@ class Cell : public Entity {
     // when reach feedMax - self-dublicate
     int feedCurrent = 0, feedMax = 0;
     float lastFeedTime = 0; // last global time when cell feeded
-    float feedCooldown = 0; // cooldown between feed actions
+    float feedCooldown = 0; // cooldown between feed actions (when cell cannot act)
+    float feedInterval = 0; // min interval before feed actions
     float maxTimeWithoutFood = 0;
     float foodDetectRadius = 0;
 

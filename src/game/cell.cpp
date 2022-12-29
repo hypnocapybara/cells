@@ -14,6 +14,7 @@ Cell::Cell(World* world, Point2 pos, int ownerId, std::map<std::string, std::str
     this->feedCurrent = 0;
     this->feedMax = std::stof(params["feedMax"]);
     this->feedCooldown = std::stof(params["feedCooldown"]);
+    this->feedInterval = std::stof(params["feedInterval"]);
     this->maxTimeWithoutFood = std::stof(params["maxTimeWithoutFood"]);
     this->foodDetectRadius = std::stof(params["foodDetectRadius"]);
 
@@ -38,7 +39,7 @@ void Cell::Process() {
         return this->Die();
     }
 
-    if (this->IsInCooldownFromAttack()) {
+    if (this->IsInCooldownFromAttack() || this->IsInCooldownFromFeed()) {
         return;
     }
 
@@ -71,6 +72,10 @@ bool Cell::IsInCooldownFromAttack() {
     return this->lastAttackTime + this->attackCooldown < this->world->GetCurrentTime();
 }
 
+bool Cell::IsInCooldownFromFeed() {
+    return this->lastFeedTime + this->feedCooldown < this->world->GetCurrentTime();
+}
+
 bool Cell::CanAttack(Cell* otherCell) {
     if (otherCell->userId == this->userId) {
         return false;
@@ -80,16 +85,16 @@ bool Cell::CanAttack(Cell* otherCell) {
     return distance < this->attackRange;
 }
 
-bool Cell::CanEat(Food* food) {
-    return food->IsCellInActiveZone(this);
+bool Cell::CanEat() {
+    return this->IsWithinFoodBase() && this->lastFeedTime + this->feedInterval < this->world->GetCurrentTime();
 }
 
-void Cell::Eat(Food* food) {
-    if (!food->HasAmountAvailable()) {
+void Cell::Eat() {
+    if (!this->feedBase) {
         return;
     }
 
-    food->HandleEaten();
+    this->feedBase->HandleEaten();
     this->lastFeedTime = this->world->GetCurrentTime();
     this->feedCurrent++;
 }

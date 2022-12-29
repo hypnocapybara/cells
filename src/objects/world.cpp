@@ -35,14 +35,20 @@ void World::Step(float delta) {
         }
     }
 
-    for (auto it = this->food.begin(); it != this->food.end(); it++) {
-        Food* food = *it;
+    for (int i = 0; i < this->food.size();) {
+        Food* food = this->food[i];
+        int sizeBefore = this->food.size();
         food->Process();
+        if (sizeBefore <= this->food.size())
+            i++;
     }
 
-    for (auto it = this->cells.begin(); it != this->cells.end(); it++) {
-        Cell* cell = *it;
+    for (int i = 0; i < this->cells.size();) {
+        Cell* cell = this->cells[i];
+        int sizeBefore = this->cells.size();
         cell->Process();
+        if (sizeBefore <= this->cells.size())
+            i++;
     }
 
     for (auto it = this->cells.begin(); it != this->cells.end(); it++) {
@@ -69,7 +75,8 @@ Cell* World::CreateBacteria(Point2 position, int ownerId) {
         {"lifetime", "100"},
         {"speed", "100"},
         {"feedMax", "5"},
-        {"feedCooldown", "2"},
+        {"feedCooldown", "1"},
+        {"feedInterval", "7"},
         {"maxTimeWithoutFood", "20"},
         {"foodDetectRadius", "600"},
         {"attackRange", "50"},
