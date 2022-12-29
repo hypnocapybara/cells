@@ -39,7 +39,7 @@ void World::Step(float delta) {
         Food* food = this->food[i];
         int sizeBefore = this->food.size();
         food->Process();
-        if (sizeBefore <= this->food.size())
+        if (sizeBefore == this->food.size())
             i++;
     }
 
@@ -47,7 +47,7 @@ void World::Step(float delta) {
         Cell* cell = this->cells[i];
         int sizeBefore = this->cells.size();
         cell->Process();
-        if (sizeBefore <= this->cells.size())
+        if (sizeBefore == this->cells.size())
             i++;
     }
 
