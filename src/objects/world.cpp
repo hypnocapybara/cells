@@ -11,21 +11,15 @@ void World::Step(float delta) {
     // move entities
     this->currentTime += delta;
 
-    for (auto it = this->food.begin(); it != this->food.end(); it++) {
-        Food* food = *it;
+    for (auto food : this->food) {
         int freeSpots = food->GetMaxCellsCount() - food->GetCurrentCellsCount();
         if (freeSpots <= 0) {
             continue;
         }
 
-        for (auto gt = this->cells.begin(); gt != this->cells.end(); gt++) {
-            if (freeSpots <= 0) {
+        for (auto cell : this->cells) {
+            if (freeSpots <= 0 || cell->feedBase) {
                 break;
-            }
-
-            Cell* cell = *gt;
-            if (cell->feedBase) {
-                continue;
             }
 
             if (food->IsCellInActiveZone(cell)) {
@@ -51,9 +45,8 @@ void World::Step(float delta) {
             i++;
     }
 
-    for (auto it = this->cells.begin(); it != this->cells.end(); it++) {
-        Cell* cell = *it;
-        if (cell->wannaMove) {
+    for (auto cell : this->cells) {
+        if (cell->inMove) {
             float distanceToPOI = Point2::DistanceBetween(cell->position, cell->poi);
             float distanceInStep = delta * cell->speed;
             if (distanceInStep >= distanceToPOI) {
@@ -72,11 +65,11 @@ void World::Step(float delta) {
 Cell* World::CreateBacteria(Point2 position, int ownerId) {
     std::map<std::string, std::string> params{
         {"healthMax", "100"},
-        {"lifetime", "10"},
-        {"speed", "100"},
+        {"lifetime", "100"},
+        {"speed", "50"},
         {"feedMax", "5"},
         {"feedCooldown", "1"},
-        {"feedInterval", "7"},
+        {"feedInterval", "3"},
         {"maxTimeWithoutFood", "20"},
         {"foodDetectRadius", "600"},
         {"attackRange", "50"},
@@ -108,8 +101,8 @@ void World::DestroyCell(Cell* cell) {
 }
 
 void World::DestroyFood(Food* food) {
-    for (auto it = food->cells.begin(); it != food->cells.end(); it++) {
-        (*it)->LeaveFoodBase();
+    for (auto cell : food->cells) {
+        cell->LeaveFoodBase();
     }
 
     auto it = std::find(this->food.begin(), this->food.end(), food);

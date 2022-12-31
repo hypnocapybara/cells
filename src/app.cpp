@@ -25,4 +25,10 @@ void App::draw(piksel::Graphics& g) {
         auto pos = cell->GetPosition();
         g.ellipse(pos.x, pos.y, 10, 10);
     }
+
+    g.rectMode(piksel::DrawMode::CENTER);
+    for (auto food : this->world->GetFood()) {
+        auto pos = food->GetPosition();
+        g.rect(pos.x, pos.y, 10, 10);
+    }
 }

@@ -4,6 +4,8 @@
 
 struct Vector2;
 
+#define EPSILON 0.001
+
 
 struct Point2 {
     float x = 0, y = 0;
@@ -20,6 +22,7 @@ struct Point2 {
     static float DistanceBetween(const Point2& a, const Point2& b);
 
     void AddVector(const Vector2& vec);
+    bool operator==(const Point2& otherPoint);
 };
 
 struct Vector2 {

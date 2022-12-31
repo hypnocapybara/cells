@@ -2,6 +2,7 @@
 #include "game/cell.h"
 #include "objects/world.h"
 #include "utils/geometry.h"
+#include "utils/generic.h"
 
 
 Cell::Cell(World* world, Point2 pos, int ownerId, std::map<std::string, std::string> params) : Entity(world, pos) {
@@ -33,8 +34,6 @@ void Cell::Process() {
     // if not enough food - die
     // if too old - die
     // if left the cell area - free the space
-    this->wannaMove = false;
-
     if (this->IsOutOfHealth() || this->IsTooHungry() || this->IsTooOld()) {
         return this->Die();
     }
@@ -50,10 +49,8 @@ void Cell::Process() {
     if (this->feedBase && !this->IsWithinFoodBase()) {
         this->LeaveFoodBase();
     }
-
-    this->wannaMove = true;
-    this->poi = this->position;
-    // TODO: form decission and POI
+    
+    this->FormDecission();
 }
 
 bool Cell::CanSplit() {
@@ -69,11 +66,11 @@ bool Cell::IsTooHungry() {
 }
 
 bool Cell::IsInCooldownFromAttack() {
-    return this->lastAttackTime + this->attackCooldown < this->world->GetCurrentTime();
+    return this->lastAttackTime + this->attackCooldown > this->world->GetCurrentTime();
 }
 
 bool Cell::IsInCooldownFromFeed() {
-    return this->lastFeedTime + this->feedCooldown < this->world->GetCurrentTime();
+    return this->lastFeedTime + this->feedCooldown > this->world->GetCurrentTime();
 }
 
 bool Cell::CanAttack(Cell* otherCell) {
@@ -132,5 +129,43 @@ void Cell::Die() {
 }
 
 void Cell::Split() {
-    
+    Point2 newCell1Pos = this->position;
+    newCell1Pos.AddVector(Vector2(5, 0));
+
+    Point2 newCell2Pos = this->position;
+    newCell2Pos.AddVector(Vector2(0, 5));
+
+    this->world->CreateBacteria(newCell1Pos, this->userId);
+    this->world->CreateBacteria(newCell2Pos, this->userId);
+    this->Die();
+}
+
+void Cell::FormDecission() {
+    if (this->position == this->poi) {
+        // reached the point
+        this->inMove = false;
+    }
+
+    if (this->inMove) {
+        // already in move
+        return;
+    }
+
+    if (this->CanEat()) {
+        this->Eat();
+        this->inMove = false;
+        return;
+    }
+
+    // DETECT OTHER FOOD AND etc
+
+    if (this->feedBase) {
+        auto feedBasePos = this->feedBase->GetPosition();
+        float radius = this->feedBase->GetRadius();
+        auto newPoiX = RandomFloat(feedBasePos.x - radius / 2, feedBasePos.x + radius / 2);
+        auto newPoiY = RandomFloat(feedBasePos.y - radius / 2, feedBasePos.y + radius / 2);
+
+        this->poi = Point2(newPoiX, newPoiY);
+        this->inMove = true;
+    }
 }

@@ -27,6 +27,8 @@ class Food : public Entity {
     void Process();
     void Die();
 
+    inline float GetRadius() {return this->radius;}
+
     inline int GetMaxCellsCount() {return this->maxCellsCount;}
     inline int GetCurrentCellsCount() {return this->cells.size();}
     inline bool HasFreeSpots() {return this->GetCurrentCellsCount() < this->GetMaxCellsCount();}

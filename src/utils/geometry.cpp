@@ -34,3 +34,7 @@ void Point2::AddVector(const Vector2& vec) {
     this->x += vec.x;
     this->y += vec.y;
 }
+
+bool Point2::operator==(const Point2& otherPoint) {
+    return fabs(this->x - otherPoint.x) < EPSILON && fabs(this->y - otherPoint.y) < EPSILON;
+}

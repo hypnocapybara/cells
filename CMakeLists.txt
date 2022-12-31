@@ -11,6 +11,7 @@ set(SOURCES
     src/game/food.cpp
     src/objects/world.cpp
     src/utils/geometry.cpp
+    src/utils/generic.cpp
 )
 add_executable(main ${SOURCES})
 target_include_directories(main

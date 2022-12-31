@@ -45,6 +45,8 @@ class Cell : public Entity {
     bool IsWithinFoodBase();
     bool IsInCooldownFromFeed();
 
+    void FormDecission();
+
     protected:
     // Variables for actions:
     // go to
@@ -62,7 +64,7 @@ class Cell : public Entity {
 
     // move
     // Vector2 direction;
-    bool wannaMove = false;
+    bool inMove = false;
     Point2 poi;
     float speed = 0;
 
