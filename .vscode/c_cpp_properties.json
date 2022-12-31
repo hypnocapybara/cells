@@ -3,13 +3,18 @@
         {
             "name": "Mac",
             "includePath": [
-                "${workspaceFolder}/include/**"
+                "${workspaceFolder}/include/**",
+                "${workspaceFolder}/lib/piksel/src",
+                "${workspaceFolder}/lib/piksel/lib/glad/include",
+                "${workspaceFolder}/lib/piksel/lib/glfw/include",
+                "${workspaceFolder}/lib/piksel/lib/msdfgen",
+                "${workspaceFolder}/lib/piksel/lib/glm"
             ],
             "defines": [],
             "macFrameworkPath": [
                 "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/System/Library/Frameworks"
             ],
-            "compilerPath": "/usr/bin/clang",
+            "compilerPath": "/usr/bin/g++",
             "cStandard": "c17",
             "cppStandard": "c++17",
             "intelliSenseMode": "macos-clang-x64"
