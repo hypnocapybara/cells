@@ -12,11 +12,11 @@ set(SOURCES
     src/objects/world.cpp
     src/utils/geometry.cpp
 )
-add_executable(index ${SOURCES})
-target_include_directories(index
+add_executable(main ${SOURCES})
+target_include_directories(main
     PUBLIC include
     PUBLIC lib/piksel/src
 )
-target_link_libraries(index
+target_link_libraries(main
     piksel
 )

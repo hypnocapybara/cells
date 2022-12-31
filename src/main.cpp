@@ -1,4 +1,5 @@
 #include "objects/world.h"
+#include "app.h"
 
 
 int main() {
@@ -10,6 +11,7 @@ int main() {
         world->Step(0.05);
     }
 
+    App app;
+    app.start();
     return 0;
 }
-
