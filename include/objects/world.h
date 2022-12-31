@@ -22,6 +22,9 @@ class World {
     void DestroyCell(Cell* cell);
     void DestroyFood(Food* food);
 
+    const std::vector<Cell*>& GetCells() {return this->cells;};
+    const std::vector<Food*>& GetFood() {return this->food;};
+
     protected:
     float width, height;
     std::vector<Cell*> cells;
