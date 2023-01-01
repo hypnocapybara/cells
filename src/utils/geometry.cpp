@@ -32,6 +32,13 @@ float Point2::DistanceBetween(const Point2& a, const Point2& b) {
     return pointsVector.CalculateLength();
 }
 
+bool Point2::IsPointWithinRect(const Point2& a, const Point2& rectCorner, int width, int height) {
+    return (
+        rectCorner.x <= a.x && a.x <= rectCorner.x + width &&
+        rectCorner.y <= a.y && a.y <= rectCorner.y + height
+    );
+}
+
 Point2 Point2::RandomPointWithinRadius(const Point2& a, float radius) {
     float angle = RandomFloat(0, piksel::TWO_PI);
     Vector2 randomVector = Vector2(cosf(angle) * radius, sinf(angle) * radius);

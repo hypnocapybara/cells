@@ -21,6 +21,7 @@ struct Point2 {
 
     static float DistanceBetween(const Point2& a, const Point2& b);
     static Point2 RandomPointWithinRadius(const Point2& a, float radius);
+    static bool IsPointWithinRect(const Point2& a, const Point2& rectCorner, int width, int height);
 
     bool operator==(const Point2& otherPoint);
     Point2 operator-(const Vector2& vec);
