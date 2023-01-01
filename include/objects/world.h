@@ -14,6 +14,7 @@ class Point2;
 
 class World {
     public:
+    World(float width, float height);
     inline float GetCurrentTime() {return this->currentTime;};
     void Step(float delta);
 

@@ -20,9 +20,12 @@ struct Point2 {
     }
 
     static float DistanceBetween(const Point2& a, const Point2& b);
+    static Point2 RandomPointWithinRadius(const Point2& a, float radius);
 
-    void AddVector(const Vector2& vec);
     bool operator==(const Point2& otherPoint);
+    Point2 operator-(const Vector2& vec);
+    Point2 operator+(const Vector2& vec);
+    Point2& operator+=(const Vector2& vec);
 };
 
 struct Vector2 {

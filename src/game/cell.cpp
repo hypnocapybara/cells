@@ -129,11 +129,8 @@ void Cell::Die() {
 }
 
 void Cell::Split() {
-    Point2 newCell1Pos = this->position;
-    newCell1Pos.AddVector(Vector2(5, 0));
-
-    Point2 newCell2Pos = this->position;
-    newCell2Pos.AddVector(Vector2(0, 5));
+    Point2 newCell1Pos = this->position + Vector2(5, 0);
+    Point2 newCell2Pos = this->position + Vector2(0, 5);
 
     this->world->CreateBacteria(newCell1Pos, this->userId);
     this->world->CreateBacteria(newCell2Pos, this->userId);
@@ -160,12 +157,10 @@ void Cell::FormDecission() {
     // DETECT OTHER FOOD AND etc
 
     if (this->feedBase) {
-        auto feedBasePos = this->feedBase->GetPosition();
-        float radius = this->feedBase->GetRadius();
-        auto newPoiX = RandomFloat(feedBasePos.x - radius / 2, feedBasePos.x + radius / 2);
-        auto newPoiY = RandomFloat(feedBasePos.y - radius / 2, feedBasePos.y + radius / 2);
-
-        this->poi = Point2(newPoiX, newPoiY);
+        this->poi = Point2::RandomPointWithinRadius(
+            this->feedBase->GetPosition(),
+            this->feedBase->GetRadius() / 1.5
+        );
         this->inMove = true;
     }
 }

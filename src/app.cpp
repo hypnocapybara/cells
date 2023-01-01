@@ -9,6 +9,10 @@ void App::setup() {
     // load fonts and images here
 }
 
+void App::keyPressed(int keycode) {
+    
+}
+
 void App::draw(piksel::Graphics& g) {
     auto curtime = std::chrono::system_clock::now();
     std::chrono::duration<float> elapsedSeconds = curtime - this->lastUpdateTime;

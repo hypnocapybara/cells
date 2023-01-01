@@ -1,5 +1,7 @@
-#include "utils/geometry.h"
 #include <cmath>
+#include <piksel/constants.hpp>
+#include "utils/geometry.h"
+#include "utils/generic.h"
 
 
 bool Vector2::IsZero() {
@@ -30,9 +32,24 @@ float Point2::DistanceBetween(const Point2& a, const Point2& b) {
     return pointsVector.CalculateLength();
 }
 
-void Point2::AddVector(const Vector2& vec) {
+Point2 Point2::RandomPointWithinRadius(const Point2& a, float radius) {
+    float angle = RandomFloat(0, piksel::TWO_PI);
+    Vector2 randomVector = Vector2(cosf(angle) * radius, sinf(angle) * radius);
+    return Point2(a) + randomVector;
+}
+
+Point2& Point2::operator+=(const Vector2& vec) {
     this->x += vec.x;
     this->y += vec.y;
+    return *this;
+}
+
+Point2 Point2::operator+(const Vector2& vec) {
+    return Point2(this->x + vec.x, this->y + vec.y);
+}
+
+Point2 Point2::operator-(const Vector2& vec) {
+    return Point2(this->x - vec.x, this->y - vec.y);
 }
 
 bool Point2::operator==(const Point2& otherPoint) {

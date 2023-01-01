@@ -5,6 +5,11 @@
 #include "objects/world.h"
 
 
+World::World(float width, float height) {
+    this->width = width;
+    this->height = height;
+}
+
 void World::Step(float delta) {
     // occupy the base for free cells
     // process all entities
@@ -56,7 +61,7 @@ void World::Step(float delta) {
                 direction.Normalize();
                 direction.MultiplyLength(distanceInStep);
 
-                cell->position.AddVector(direction);
+                cell->position += direction;
             }
         }
     }
