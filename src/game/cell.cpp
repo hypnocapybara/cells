@@ -11,6 +11,7 @@ Cell::Cell(World* world, Point2 pos, int ownerId, std::map<std::string, std::str
     this->healthCurrent = this->healthMax = std::stof(params["healthMax"]);
     this->lifetime = std::stof(params["lifetime"]);
     this->speed = std::stof(params["speed"]);
+    this->radius = std::stof(params["radius"]);
 
     this->feedCurrent = 0;
     this->feedMax = std::stof(params["feedMax"]);
@@ -138,7 +139,7 @@ void Cell::Split() {
 }
 
 void Cell::FormDecission() {
-    if (this->position == this->poi) {
+    if (Point2::DistanceBetween(this->position, this->poi) < this->radius * 1.2) {
         // reached the point
         this->inMove = false;
     }

@@ -47,6 +47,8 @@ class Cell : public Entity {
 
     void FormDecission();
 
+    inline float GetRadius() {return this->radius;}
+
     protected:
     // Variables for actions:
     // go to
@@ -66,7 +68,9 @@ class Cell : public Entity {
     // Vector2 direction;
     bool inMove = false;
     Point2 poi;
+    Vector2 velocity;
     float speed = 0;
+    float radius = 0;
 
     // feed & fission variables
     // when reach feedMax - self-dublicate

@@ -5,7 +5,7 @@
 
 
 bool Vector2::IsZero() {
-    return this->x == 0 && this->y == 0;  // TODO: compare with epsilon
+    return fabsf(this->x) < EPSILON && fabsf(this->y) < EPSILON;
 }
 
 float Vector2::CalculateLength() {
@@ -22,9 +22,25 @@ Vector2 Vector2::FromPoints(const Point2& a, const Point2& b) {
     return Vector2(b.x - a.x, b.y - a.y);
 }
 
-void Vector2::MultiplyLength(float val) {
+Vector2 Vector2::RandomUnitVector() {
+    float angle = RandomFloat(0, piksel::TWO_PI);
+    return Vector2(cosf(angle), sinf(angle));
+}
+
+Vector2& Vector2::operator*=(float val) {
     this->x *= val;
     this->y *= val;
+    return *this;
+}
+
+Vector2 Vector2::operator*(float val) {
+    return Vector2(this->x * val, this->y * val);
+}
+
+Vector2& Vector2::operator+=(const Vector2& vec) {
+    this->x += vec.x;
+    this->y += vec.y;
+    return *this;
 }
 
 float Point2::DistanceBetween(const Point2& a, const Point2& b) {
@@ -60,5 +76,5 @@ Point2 Point2::operator-(const Vector2& vec) {
 }
 
 bool Point2::operator==(const Point2& otherPoint) {
-    return fabs(this->x - otherPoint.x) < EPSILON && fabs(this->y - otherPoint.y) < EPSILON;
+    return fabsf(this->x - otherPoint.x) < EPSILON && fabsf(this->y - otherPoint.y) < EPSILON;
 }

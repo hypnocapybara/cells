@@ -63,7 +63,7 @@ void App::draw(piksel::Graphics& g) {
     auto curtime = std::chrono::system_clock::now();
     std::chrono::duration<float> elapsedSeconds = curtime - this->lastUpdateTime;
     float step = elapsedSeconds.count();
-    if (step > 0.05) {
+    if (step > 0.02) {
         this->world->Step(step);
         this->lastUpdateTime = curtime;
     }
@@ -84,7 +84,7 @@ void App::draw(piksel::Graphics& g) {
         pos.y -= this->cameraPos.y;
 
         g.fill(glm::vec4(0.9f, 0.9f, 0.9f, 1.0f));
-        g.ellipse(pos.x, pos.y, 10, 10);
+        g.ellipse(pos.x, pos.y, cell->GetRadius() * 2, cell->GetRadius() * 2);
     }
 
     g.rectMode(piksel::DrawMode::CENTER);
@@ -120,7 +120,7 @@ void App::ProcessCamera(float step) {
         cameraDirection.x += 1;
     }
 
-    cameraDirection.MultiplyLength(step * cameraSpeed);
+    cameraDirection *= step * cameraSpeed;
     this->cameraPos += cameraDirection;
 }
 

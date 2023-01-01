@@ -4,17 +4,17 @@
 
 struct Vector2;
 
-#define EPSILON 0.001
+#define EPSILON 0.0001
 
 
 struct Point2 {
-    float x = 0, y = 0;
+    float x = 0.0f, y = 0.0f;
 
     Point2() {
-        this->x = this->y = 0;
+        this->x = this->y = 0.0f;
     };
 
-    Point2(int x, int y) {
+    Point2(float x, float y) {
         this->x = x;
         this->y = y;
     }
@@ -30,22 +30,26 @@ struct Point2 {
 };
 
 struct Vector2 {
-    float x = 0, y = 0;
+    float x = 0.0f, y = 0.0f;
 
     Vector2() {
-        this->x = this->y = 0;
+        this->x = this->y = 0.0f;
     };
 
-    Vector2(int x, int y) {
+    Vector2(float x, float y) {
         this->x = x;
         this->y = y;
     }
 
     bool IsZero();
     void Normalize();
-    void MultiplyLength(float val);
     float CalculateLength();
 
+    Vector2& operator*=(float len);
+    Vector2 operator*(float len);
+    Vector2& operator+=(const Vector2& vec);
+
+    static Vector2 RandomUnitVector();
     static Vector2 FromPoints(const Point2& a, const Point2& b);
     
 };

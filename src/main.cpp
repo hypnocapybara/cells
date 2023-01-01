@@ -5,7 +5,11 @@
 int main() {
     World* world = new World(1200, 1200);
     world->CreateBacteria(Point2(100, 100), 0);
-    world->CreateFood(Point2(120, 120), 10, 100, 2);
+    world->CreateFood(Point2(120, 120), 100, 100, 20);
+
+    // for (int i = 0; i < 9999999; i++) {
+    //     world->Step(0.022);
+    // }
 
     App app(world, 800, 600);
     app.start();
