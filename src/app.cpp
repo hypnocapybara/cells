@@ -78,13 +78,20 @@ void App::draw(piksel::Graphics& g) {
             continue;
         }
 
+        g.push();
         g.strokeWeight(1);
         Point2 pos = cell->GetPosition();
         pos.x -= this->cameraPos.x;
         pos.y -= this->cameraPos.y;
 
-        g.fill(glm::vec4(0.9f, 0.9f, 0.9f, 1.0f));
+        if (cell->GetUserId() == 1) {
+            g.fill(glm::vec4(0.9f, 0.9f, 0.0f, 1.0f));
+        } else {
+            g.fill(glm::vec4(0.9f, 0.9f, 0.9f, 1.0f));
+        }
+        
         g.ellipse(pos.x, pos.y, cell->GetRadius() * 2, cell->GetRadius() * 2);
+        g.pop();
     }
 
     g.rectMode(piksel::DrawMode::CENTER);

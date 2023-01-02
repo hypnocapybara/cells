@@ -103,7 +103,7 @@ void World::Step(float delta) {
 
 Cell* World::CreateBacteria(Point2 position, int ownerId) {
     std::map<std::string, std::string> params{
-        {"healthMax", "100"},
+        {"healthMax", "30"},
         {"lifetime", "100"},
         {"speed", "70"},
         {"radius", "5"},
@@ -112,7 +112,7 @@ Cell* World::CreateBacteria(Point2 position, int ownerId) {
         {"feedInterval", "3"},
         {"maxTimeWithoutFood", "20"},
         {"foodDetectRadius", "600"},
-        {"attackRange", "3"},
+        {"attackRange", "4"},
         {"attackPower", "10"},
         {"attackCooldown", "1"},
         {"enemiesDetectRadius", "600"}

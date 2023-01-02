@@ -46,6 +46,7 @@ class Cell : public Entity {
     bool IsInCooldownFromFeed();
 
     inline float GetRadius() {return this->radius;}
+    inline int GetUserId() {return this->userId;}
 
     // === Should go to AI module ===
     enum Intention {

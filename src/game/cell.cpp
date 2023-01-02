@@ -42,6 +42,7 @@ void Cell::Process() {
     }
 
     if (this->IsInCooldownFromAttack() || this->IsInCooldownFromFeed()) {
+        this->inMove = false;
         return;
     }
 
@@ -77,12 +78,12 @@ bool Cell::IsInCooldownFromFeed() {
 }
 
 bool Cell::CanAttack(Cell* otherCell) {
-    if (otherCell->userId == this->userId) {
+    if (otherCell->userId == this->userId || this->IsInCooldownFromAttack()) {
         return false;
     }
 
     float distance = Point2::DistanceBetween(this->position, otherCell->position);
-    return distance < this->attackRange;
+    return distance < this->attackRange + this->radius + otherCell->radius;
 }
 
 bool Cell::CanEat() {
@@ -101,6 +102,9 @@ void Cell::Eat() {
 
 void Cell::Attack(Cell* otherCell) {
     this->lastAttackTime = this->world->GetCurrentTime();
+    this->poiRadius = 0.0f;
+    this->inMove = false;
+    this->intention = Cell::Intention::Nothing;
     otherCell->TakeDamage(this->attackPower);
 }
 
@@ -146,41 +150,66 @@ void Cell::FormDecission() {
         this->inMove = false;
         this->poiRadius = 0.0f;
         this->intention = Cell::Intention::Nothing;
-    }
-
-    if (this->inMove) {
-        // already in move
         return;
     }
 
-    if (this->CanEat()) {
-        this->Eat();
-        this->inMove = false;
-        this->poiRadius = 0.0f;
-        return;
+    // DETECT OTHER FOOD IF HUNGRY
+    bool isHungry = this->lastFeedTime + this->maxTimeWithoutFood / 2.0f < this->world->GetCurrentTime();
+    if (isHungry) {
+        if (!this->IsWithinFoodBase()) {
+            // trying to find the other food base
+            float closestDistance = 999999999.0f;
+            Food* closestFood = NULL;
+            for (auto food : this->world->GetFood()) {
+                if (!food->HasFreeSpots()) {
+                    continue;
+                }
+
+                float distance = Point2::DistanceBetween(food->GetPosition(), this->position);
+                if (distance < closestDistance) {
+                    closestDistance = distance;
+                    closestFood = food;
+                }
+            }
+
+            if (closestFood && closestDistance < this->foodDetectRadius) {
+                this->intention = Cell::Intention::WannaFeed;
+                this->MoveToPoint(closestFood->GetPosition(), closestFood->GetRadius() / 1.5f);
+                return;
+            }
+        } else if (this->CanEat()) {
+            this->Eat();
+            this->inMove = false;
+            this->poiRadius = 0.0f;
+            this->intention = Cell::Intention::Nothing;
+            return;
+        }
     }
 
-    // DETECT OTHER FOOD AND etc
-    bool isHalfHungry = this->lastFeedTime + this->maxTimeWithoutFood / 2.0f < this->world->GetCurrentTime();
-    if (!this->feedBase && isHalfHungry) {
-        // trying to find the other food base
-        float closestDistance = 999999999.0f;
-        Food* closestFood = NULL;
-        for (auto food : this->world->GetFood()) {
-            if (!food->HasFreeSpots()) {
-                continue;
-            }
-
-            float distance = Point2::DistanceBetween(food->GetPosition(), this->position);
-            if (distance < closestDistance) {
-                closestDistance = distance;
-                closestFood = food;
-            }
+    // ATTACK
+    float closestEnemyDistance = 999999999.0f;
+    Cell* closestEnemy = NULL;
+    for (auto cell : this->world->GetCells()) {
+        if (cell->userId == this->userId) {
+            continue;
         }
 
-        if (closestFood && closestDistance <= this->foodDetectRadius) {
-            this->intention = Cell::Intention::WannaFeed;
-            this->MoveToPoint(closestFood->GetPosition(), closestFood->GetRadius() / 1.5f);
+        float distance = Point2::DistanceBetween(cell->position, this->position);
+        if (distance < closestEnemyDistance) {
+            closestEnemyDistance = distance;
+            closestEnemy = cell;
+        }
+
+        if (closestEnemy && closestEnemyDistance < this->enemiesDetectRadius) {
+            if (this->CanAttack(closestEnemy)) {
+                this->Attack(closestEnemy);
+            } else {
+                this->intention = Cell::Intention::WannaAttack;
+                this->MoveToPoint(
+                    closestEnemy->position,
+                    this->radius + closestEnemy->radius + this->attackRange
+                );
+            }
         }
     }
 
