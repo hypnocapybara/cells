@@ -45,9 +45,19 @@ class Cell : public Entity {
     bool IsWithinFoodBase();
     bool IsInCooldownFromFeed();
 
-    void FormDecission();
-
     inline float GetRadius() {return this->radius;}
+
+    // === Should go to AI module ===
+    enum Intention {
+        Nothing,
+        WannaFeed,
+        WannaAttack,
+        Patrolling
+    };
+
+    void FormDecission();
+    bool HasReachedThePoi();
+    void MoveToPoint(Point2 poi, float poiRadius);
 
     protected:
     // Variables for actions:
@@ -68,6 +78,7 @@ class Cell : public Entity {
     // Vector2 direction;
     bool inMove = false;
     Point2 poi;
+    float poiRadius;
     Vector2 velocity;
     float speed = 0;
     float radius = 0;
@@ -90,6 +101,9 @@ class Cell : public Entity {
 
     // belonging
     int userId = 0;
+
+    // === Should go to AI module ===
+    Intention intention;
 
     friend class World;
 };

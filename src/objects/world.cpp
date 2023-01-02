@@ -112,7 +112,7 @@ Cell* World::CreateBacteria(Point2 position, int ownerId) {
         {"feedInterval", "3"},
         {"maxTimeWithoutFood", "20"},
         {"foodDetectRadius", "600"},
-        {"attackRange", "50"},
+        {"attackRange", "3"},
         {"attackPower", "10"},
         {"attackCooldown", "1"},
         {"enemiesDetectRadius", "600"}

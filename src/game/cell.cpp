@@ -12,6 +12,8 @@ Cell::Cell(World* world, Point2 pos, int ownerId, std::map<std::string, std::str
     this->lifetime = std::stof(params["lifetime"]);
     this->speed = std::stof(params["speed"]);
     this->radius = std::stof(params["radius"]);
+    this->poiRadius = 0.0f;
+    this->intention = Cell::Intention::Nothing;
 
     this->feedCurrent = 0;
     this->feedMax = std::stof(params["feedMax"]);
@@ -139,9 +141,11 @@ void Cell::Split() {
 }
 
 void Cell::FormDecission() {
-    if (Point2::DistanceBetween(this->position, this->poi) < this->radius * 1.2) {
+    if (this->HasReachedThePoi()) {
         // reached the point
         this->inMove = false;
+        this->poiRadius = 0.0f;
+        this->intention = Cell::Intention::Nothing;
     }
 
     if (this->inMove) {
@@ -152,16 +156,50 @@ void Cell::FormDecission() {
     if (this->CanEat()) {
         this->Eat();
         this->inMove = false;
+        this->poiRadius = 0.0f;
         return;
     }
 
     // DETECT OTHER FOOD AND etc
+    bool isHalfHungry = this->lastFeedTime + this->maxTimeWithoutFood / 2.0f < this->world->GetCurrentTime();
+    if (!this->feedBase && isHalfHungry) {
+        // trying to find the other food base
+        float closestDistance = 999999999.0f;
+        Food* closestFood = NULL;
+        for (auto food : this->world->GetFood()) {
+            if (!food->HasFreeSpots()) {
+                continue;
+            }
 
-    if (this->feedBase) {
-        this->poi = Point2::RandomPointWithinRadius(
-            this->feedBase->GetPosition(),
-            this->feedBase->GetRadius() / 1.5
-        );
-        this->inMove = true;
+            float distance = Point2::DistanceBetween(food->GetPosition(), this->position);
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestFood = food;
+            }
+        }
+
+        if (closestFood && closestDistance <= this->foodDetectRadius) {
+            this->intention = Cell::Intention::WannaFeed;
+            this->MoveToPoint(closestFood->GetPosition(), closestFood->GetRadius() / 1.5f);
+        }
     }
+
+    if (this->feedBase && this->intention == Cell::Intention::Nothing) {
+        this->intention = Cell::Intention::Patrolling;
+        Point2 poi = Point2::RandomPointWithinRadius(
+            this->feedBase->GetPosition(),
+            this->feedBase->GetRadius() / 1.5f
+        );
+        this->MoveToPoint(poi, this->radius * 1.2f);
+    }
+}
+
+bool Cell::HasReachedThePoi() {
+    return this->poiRadius > EPSILON && Point2::DistanceBetween(this->position, this->poi) < this->poiRadius;
+}
+
+void Cell::MoveToPoint(Point2 poi, float poiRadius) {
+    this->poi = poi;
+    this->inMove = true;
+    this->poiRadius = poiRadius;
 }
