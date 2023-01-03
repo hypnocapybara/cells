@@ -71,28 +71,41 @@ void App::draw(piksel::Graphics& g) {
     this->ProcessCamera(step);
 
     g.background(glm::vec4(0.1f, 0.1f, 0.1f, 1.0f));
+
+    this->DrawFood(g);
+    this->DrawCells(g);
+}
+
+void App::DrawCells(piksel::Graphics& g) {
+    g.push();
     g.ellipseMode(piksel::DrawMode::CENTER);
+    g.strokeWeight(1);
 
     for (auto cell : this->world->GetCells()) {
         if (!this->IsSeenByCamera(cell->GetPosition())) {
             continue;
         }
 
-        g.push();
-        g.strokeWeight(1);
         Point2 pos = cell->GetPosition();
         pos.x -= this->cameraPos.x;
         pos.y -= this->cameraPos.y;
 
+        // On a black background, the high-chroma colors yellow (#FFFF00), green (#00FF00), 
+        // cyan (#00FFFF), and magenta (#FF00FF) provide the best contrast.
         if (cell->GetUserId() == 1) {
             g.fill(glm::vec4(0.9f, 0.9f, 0.0f, 1.0f));
         } else {
-            g.fill(glm::vec4(0.9f, 0.9f, 0.9f, 1.0f));
+            g.fill(glm::vec4(0.0f, 0.9f, 0.9f, 1.0f));
         }
         
         g.ellipse(pos.x, pos.y, cell->GetRadius() * 2, cell->GetRadius() * 2);
-        g.pop();
     }
+
+    g.pop();
+}
+
+void App::DrawFood(piksel::Graphics& g) {
+    g.push();
 
     g.rectMode(piksel::DrawMode::CENTER);
     for (auto food : this->world->GetFood()) {
@@ -100,8 +113,11 @@ void App::draw(piksel::Graphics& g) {
         pos.x -= this->cameraPos.x;
         pos.y -= this->cameraPos.y;
 
+        g.fill(glm::vec4(0.9f, 0.9f, 0.9f, 1.0f));
         g.rect(pos.x, pos.y, 10, 10);
     }
+
+    g.pop();
 }
 
 void App::ProcessCamera(float step) {

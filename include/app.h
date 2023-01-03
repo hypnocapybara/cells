@@ -28,6 +28,9 @@ protected:
     void ProcessCamera(float step);
     bool IsSeenByCamera(const Point2& point);
 
+    void DrawCells(piksel::Graphics& g);
+    void DrawFood(piksel::Graphics& g);
+
     World* world;
     std::chrono::high_resolution_clock::time_point lastUpdateTime;
     Point2 cameraPos;
