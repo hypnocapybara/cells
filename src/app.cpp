@@ -1,10 +1,12 @@
 #include "app.h"
+#include <iostream>
 
 App::App(World* w, int width, int height) : piksel::BaseApp(width, height) {
     this->world = w;
     this->lastUpdateTime = std::chrono::system_clock::now();
     this->cameraPos = Point2(0, 0);
     this->pressedKeys = 0;
+    this->mouseX = this->mouseY = 0;
 }
 
 void App::setup() {
@@ -57,6 +59,23 @@ void App::keyReleased(int keycode) {
     default:
         break;
     }
+}
+
+void App::mousePressed(int code) {
+    if (code != 0) {
+        return;
+    }
+
+    Point2 clickPoint = Point2(
+        this->cameraPos.x + this->mouseX,
+        this->cameraPos.y + this->mouseY
+    );
+    this->world->CreateFood(clickPoint, 100, 100, 10);
+}
+
+void App::mouseMoved(int x, int y) {
+    this->mouseX = x;
+    this->mouseY = y;
 }
 
 void App::draw(piksel::Graphics& g) {

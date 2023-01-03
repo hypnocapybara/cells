@@ -87,7 +87,8 @@ bool Cell::CanAttack(Cell* otherCell) {
 }
 
 bool Cell::CanEat() {
-    return this->IsWithinFoodBase() && this->lastFeedTime + this->feedInterval < this->world->GetCurrentTime();
+    return this->IsWithinFoodBase() && !this->IsInCooldownFromAttack() && 
+        this->lastFeedTime + this->feedInterval < this->world->GetCurrentTime();
 }
 
 void Cell::Eat() {
@@ -154,34 +155,38 @@ void Cell::FormDecission() {
     }
 
     // DETECT OTHER FOOD IF HUNGRY
+
+    bool canEat = this->CanEat();
     bool isHungry = this->lastFeedTime + this->maxTimeWithoutFood / 2.0f < this->world->GetCurrentTime();
-    if (isHungry) {
-        if (!this->IsWithinFoodBase()) {
-            // trying to find the other food base
-            float closestDistance = 999999999.0f;
-            Food* closestFood = NULL;
-            for (auto food : this->world->GetFood()) {
-                if (!food->HasFreeSpots()) {
-                    continue;
-                }
+    if (
+        (canEat && this->intention != Cell::Intention::WannaAttack) ||
+        (canEat && isHungry)) {
+        this->Eat();
+        this->inMove = false;
+        this->poiRadius = 0.0f;
+        this->intention = Cell::Intention::Nothing;
+        return;
+    }
 
-                float distance = Point2::DistanceBetween(food->GetPosition(), this->position);
-                if (distance < closestDistance) {
-                    closestDistance = distance;
-                    closestFood = food;
-                }
+    if (isHungry && !this->IsWithinFoodBase()) {
+        // trying to find the other food base
+        float closestDistance = 999999999.0f;
+        Food* closestFood = NULL;
+        for (auto food : this->world->GetFood()) {
+            if (!food->HasFreeSpots()) {
+                continue;
             }
 
-            if (closestFood && closestDistance < this->foodDetectRadius) {
-                this->intention = Cell::Intention::WannaFeed;
-                this->MoveToPoint(closestFood->GetPosition(), closestFood->GetRadius() / 1.5f);
-                return;
+            float distance = Point2::DistanceBetween(food->GetPosition(), this->position);
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestFood = food;
             }
-        } else if (this->CanEat()) {
-            this->Eat();
-            this->inMove = false;
-            this->poiRadius = 0.0f;
-            this->intention = Cell::Intention::Nothing;
+        }
+
+        if (closestFood && closestDistance < this->foodDetectRadius) {
+            this->intention = Cell::Intention::WannaFeed;
+            this->MoveToPoint(closestFood->GetPosition(), closestFood->GetRadius() / 1.5f);
             return;
         }
     }

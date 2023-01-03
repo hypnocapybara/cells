@@ -24,7 +24,7 @@ void World::Step(float delta) {
 
         for (auto cell : this->cells) {
             if (freeSpots <= 0 || cell->feedBase) {
-                break;
+                continue;
             }
 
             if (food->IsCellInActiveZone(cell)) {

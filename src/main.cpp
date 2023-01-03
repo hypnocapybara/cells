@@ -3,22 +3,23 @@
 
 
 int main() {
-    World* world = new World(1200, 1200);
+    World* world = new World(2000, 2000);
+
     world->CreateBacteria(Point2(110, 100), 0);
     world->CreateBacteria(Point2(100, 100), 0);
     world->CreateBacteria(Point2(100, 110), 0);
     world->CreateFood(Point2(120, 120), 100, 100, 10);
-    world->CreateFood(Point2(350, 350), 100, 100, 10);
 
-    world->CreateBacteria(Point2(400, 400), 1);
-    world->CreateBacteria(Point2(410, 400), 1);
-    world->CreateBacteria(Point2(420, 400), 1);
+    world->CreateBacteria(Point2(1000, 1000), 1);
+    world->CreateBacteria(Point2(1010, 1000), 1);
+    world->CreateBacteria(Point2(1000, 1010), 1);
+    world->CreateFood(Point2(1010, 1010), 100, 100, 10);
 
     // for (int i = 0; i < 9999999; i++) {
     //     world->Step(0.022);
     // }
 
-    App app(world, 800, 600);
+    App app(world, 1000, 800);
     app.start();
     return 0;
 }

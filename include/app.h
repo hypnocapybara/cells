@@ -23,6 +23,8 @@ public:
     void draw(piksel::Graphics& g);
     void keyPressed(int keycode);
     void keyReleased(int keycode);
+    void mousePressed(int code);
+    void mouseMoved(int x, int y);
 
 protected:
     void ProcessCamera(float step);
@@ -35,5 +37,6 @@ protected:
     std::chrono::high_resolution_clock::time_point lastUpdateTime;
     Point2 cameraPos;
     int pressedKeys;
+    int mouseX, mouseY;
 };
 #endif /* APP_HPP */
