@@ -42,6 +42,10 @@ void World::Step(float delta) {
             i++;
     }
 
+    for (auto f : this->food) {
+        assert(f->currentAmount < 120);
+    }
+
     for (int i = 0; i < this->cells.size();) {
         Cell* cell = this->cells[i];
         int sizeBefore = this->cells.size();
@@ -141,8 +145,10 @@ void World::DestroyCell(Cell* cell) {
 }
 
 void World::DestroyFood(Food* food) {
-    for (auto cell : food->cells) {
-        cell->LeaveFoodBase();
+    for (auto cell : this->cells) {
+        if (cell->feedBase == food) {
+            cell->LeaveFoodBase();
+        }
     }
 
     for (auto& f : this->food) {
