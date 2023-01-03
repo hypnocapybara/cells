@@ -28,6 +28,7 @@ class World {
 
     protected:
     float width, height;
+    // TODO: use unique_ptrs
     std::vector<Cell*> cells;
     std::vector<Food*> food;
 

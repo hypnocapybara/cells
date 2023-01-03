@@ -145,9 +145,13 @@ void World::DestroyFood(Food* food) {
         cell->LeaveFoodBase();
     }
 
-    auto it = std::find(this->food.begin(), this->food.end(), food);
-    assert(it != this->food.end());
-    this->food.erase(it);
+    for (auto& f : this->food) {
+        if (f == food) {
+            delete f;
+            f = nullptr;
+            break;
+        }
+    }
 
-    delete food;
+    this->food.erase(std::remove(this->food.begin(), this->food.end(), nullptr), this->food.end());
 }
