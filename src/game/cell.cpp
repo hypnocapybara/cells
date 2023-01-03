@@ -37,6 +37,10 @@ void Cell::Process() {
     // if not enough food - die
     // if too old - die
     // if left the cell area - free the space
+    if (this->feedBase && !this->IsWithinFoodBase()) {
+        this->LeaveFoodBase();
+    }
+
     if (this->IsOutOfHealth() || this->IsTooHungry() || this->IsTooOld()) {
         return this->Die();
     }
@@ -48,10 +52,6 @@ void Cell::Process() {
 
     if (this->CanSplit()) {
         return this->Split();
-    }
-
-    if (this->feedBase && !this->IsWithinFoodBase()) {
-        this->LeaveFoodBase();
     }
     
     this->FormDecission();
