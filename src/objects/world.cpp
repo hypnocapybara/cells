@@ -16,6 +16,7 @@ void World::Step(float delta) {
     // move entities
     this->currentTime += delta;
 
+    // Handle food bases occupied
     for (auto food : this->food) {
         int freeSpots = food->GetMaxCellsCount() - food->GetCurrentCellsCount();
         if (freeSpots <= 0) {
@@ -34,6 +35,7 @@ void World::Step(float delta) {
         }
     }
 
+    // process food
     for (int i = 0; i < this->food.size();) {
         Food* food = this->food[i];
         int sizeBefore = this->food.size();
@@ -42,10 +44,7 @@ void World::Step(float delta) {
             i++;
     }
 
-    for (auto f : this->food) {
-        assert(f->currentAmount < 120);
-    }
-
+    // process cells
     for (int i = 0; i < this->cells.size();) {
         Cell* cell = this->cells[i];
         int sizeBefore = this->cells.size();
@@ -54,6 +53,7 @@ void World::Step(float delta) {
             i++;
     }
 
+    // move cells: calculate velocities
     for (auto cell : this->cells) {
         cell->velocity = Vector2(0.0f, 0.0f);
 
@@ -90,6 +90,7 @@ void World::Step(float delta) {
         cell->velocity += collisionVelocity;
     }
 
+    // move cells: change position
     for (auto cell : this->cells) {
         if (cell->velocity.IsZero()) {
             continue;
