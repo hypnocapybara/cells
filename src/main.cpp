@@ -3,6 +3,7 @@
 
 
 int main() {
+    srand (time(NULL));
     World* world = new World(2000, 2000);
 
     world->CreateBacteria(Point2(110, 100), 0);

@@ -8,3 +8,8 @@ float RandomFloat(float a, float b) {
     float r = random * diff;
     return a + r;
 }
+
+int RandomInt(int a, int b) {
+    int diff = b - a;
+    return a + (rand() % diff);
+}
