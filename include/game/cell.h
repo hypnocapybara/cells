@@ -59,6 +59,7 @@ class Cell : public Entity {
     void FormDecission();
     bool HasReachedThePoi();
     void MoveToPoint(Point2 poi, float poiRadius);
+    void StopActivity();
 
     protected:
     // Variables for actions:

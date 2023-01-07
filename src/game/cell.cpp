@@ -87,7 +87,8 @@ bool Cell::CanAttack(Cell* otherCell) {
 }
 
 bool Cell::CanEat() {
-    return this->IsWithinFoodBase() && !this->IsInCooldownFromAttack() && 
+    return this->IsWithinFoodBase() && !this->IsInCooldownFromAttack() &&
+        this->feedBase->HasAvailableAmount() && 
         this->lastFeedTime + this->feedInterval < this->world->GetCurrentTime();
 }
 
@@ -103,9 +104,7 @@ void Cell::Eat() {
 
 void Cell::Attack(Cell* otherCell) {
     this->lastAttackTime = this->world->GetCurrentTime();
-    this->poiRadius = 0.0f;
-    this->inMove = false;
-    this->intention = Cell::Intention::Nothing;
+    this->StopActivity();
     otherCell->TakeDamage(this->attackPower);
 }
 
@@ -148,9 +147,7 @@ void Cell::Split() {
 void Cell::FormDecission() {
     if (this->HasReachedThePoi()) {
         // reached the point
-        this->inMove = false;
-        this->poiRadius = 0.0f;
-        this->intention = Cell::Intention::Nothing;
+        this->StopActivity();
         return;
     }
 
@@ -162,9 +159,7 @@ void Cell::FormDecission() {
         (canEat && this->intention != Cell::Intention::WannaAttack) ||
         (canEat && isHungry)) {
         this->Eat();
-        this->inMove = false;
-        this->poiRadius = 0.0f;
-        this->intention = Cell::Intention::Nothing;
+        this->StopActivity();
         return;
     }
 
@@ -236,4 +231,10 @@ void Cell::MoveToPoint(Point2 poi, float poiRadius) {
     this->poi = poi;
     this->inMove = true;
     this->poiRadius = poiRadius;
+}
+
+void Cell::StopActivity() {
+    this->inMove = false;
+    this->poiRadius = 0.0f;
+    this->intention = Cell::Intention::Nothing;
 }
