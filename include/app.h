@@ -34,7 +34,7 @@ protected:
     void DrawFood(piksel::Graphics& g);
 
     World* world;
-    std::chrono::high_resolution_clock::time_point lastUpdateTime;
+    std::chrono::system_clock::time_point lastUpdateTime;
     Point2 cameraPos;
     int pressedKeys;
     int mouseX, mouseY;
