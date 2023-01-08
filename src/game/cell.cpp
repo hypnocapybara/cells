@@ -156,7 +156,7 @@ void Cell::FormDecission() {
     bool canEat = this->CanEat();
     bool isHungry = this->lastFeedTime + this->maxTimeWithoutFood / 2.0f < this->world->GetCurrentTime();
     if (
-        (canEat && this->intention != Cell::Intention::WannaAttack) ||
+        (canEat && this->intention == Cell::Intention::Nothing) ||
         (canEat && isHungry)) {
         this->Eat();
         this->StopActivity();
